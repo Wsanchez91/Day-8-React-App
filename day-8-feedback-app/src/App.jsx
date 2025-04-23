@@ -12,6 +12,21 @@ function Counter() {
   )
 }
 
+function NameInput() {
+  const [name, setName] = useState("");
+
+  return (
+    <div>
+      <h2>Enter Your Name:</h2>
+      <input
+      type="text"
+      value={name}
+      onChange={(e) => setName(e.target.value)}/>
+      <p>Your name is: {name}</p>
+    </div>
+  )
+}
+
 function Greeting(props) {
   return (
     <h1>
@@ -25,6 +40,7 @@ function App() {
     <div className="App">
       <Greeting name="William" test="Beast" />
       <Counter />
+      <NameInput />
     </div>
   );
 }
