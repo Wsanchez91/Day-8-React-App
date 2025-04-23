@@ -122,13 +122,26 @@ function LoginToggle() {
 
   return (
     <div>
-      <button onClick={handleClick}>
-        {isLoggedIn ? "Logout" : "Login"}
-      </button>
+      <button onClick={handleClick}>{isLoggedIn ? "Logout" : "Login"}</button>
 
       {isLoggedIn && <p>Welcome back, user!</p>}
     </div>
-  )
+  );
+}
+
+function ListExample() {
+  const items = ["React", "Javascript", "CSS", "HTML"];
+
+  return (
+    <div>
+      <h2>Skills List</h2>
+      <ul>
+        {items.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 function App() {
@@ -140,6 +153,7 @@ function App() {
       <MultiInputForm />
       <ToggleMessage />
       <LoginToggle />
+      <ListExample />
     </div>
   );
 }
