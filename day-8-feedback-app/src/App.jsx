@@ -144,6 +144,37 @@ function ListExample() {
   );
 }
 
+function UserList() {
+  const users = [
+    {
+      id: 1,
+      name: "William",
+      age: 30,
+    },
+    {
+      id: 2,
+      name: "Sarah",
+      age: 28,
+    },
+    {
+      id: 3,
+      name: "Mike",
+      age: 35,
+    },
+  ];
+
+  return (
+    <div>
+      <h2>User List</h2>
+      <ul>
+        {users.map((user) => (
+          <li key={user.id}><strong>{user.name}</strong> is {user.age} years old.</li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 function App() {
   return (
     <div className="App">
@@ -154,6 +185,7 @@ function App() {
       <ToggleMessage />
       <LoginToggle />
       <ListExample />
+      <UserList />
     </div>
   );
 }
