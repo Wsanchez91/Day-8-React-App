@@ -1,191 +1,83 @@
 import { useState } from "react";
 
-function Counter() {
-  const [count, setCount] = useState(0);
+function PostManager() {
+  //This posts useState creates an empty array, where I would enter the new posts.
+  const [posts, setPosts] = useState([]);
+  //This form useState creates an object with title and content.
+  const [form, setForm] = useState({ title: "", content: "" });
+  //This will be used to check if the state is true or false to show or hide the post.
+  const [showPosts, setShowPosts] = useState(true);
 
-  return (
-    <div>
-      <h2>Simple Counter</h2>
-      <p>Count: {count}</p>
-      <button onClick={() => setCount(count + 1)}>Add</button>
-    </div>
-  );
-}
-
-function NameInput() {
-  const [name, setName] = useState("");
-
-  return (
-    <div>
-      <h2>Enter Your Name:</h2>
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <p>Your name is: {name}</p>
-    </div>
-  );
-}
-
-function MultiInputForm() {
-  // this uses the useState method. I used the formData as my current value, and setFormData as the logic used to change the value of formData. In this case the useState parameter is an object vs the last few examples have been a number or string. Making it an object allows one to add multiple values, and use it to manipulate them later.
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-
-  //looks like this is creating a variable that is the actual event that handles the event on the onChange section, similarly to the last lesson.
+  //This targets the element key and value in the input section.
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // setFromData is the logic, so I guess is giving it a function. It uses the prev as an argument then it creates a object that uses a spread operator and maybe a bracket notation of name which I think it's form the e.target, and made it equal to value.
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  //This is a new variable that creates a function that is to prevent the default of the page, and uses alert once you submit your entries.
+  //This uses the preventDefault event so the page doesn't refresh. It also checks if both title and content have been changed, and it will add the updated title and post changes into the post array.
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(`Submitted:\nName: ${formData.name}\nEmail: ${formData.email}`);
+    if (form.title && form.content) {
+      setPosts((prev) => [...prev, form]);
+      setForm({ title: "", content: "" });
+    }
   };
 
-  //The return is the actual HTML element that will be passed in to the page. In the case, there are 3 input sections, one for name, email, and password. Each one is linked to the formData object value. Also, the onChange is now linked to the handleChange that has the actual e.target logic.
-  return (
-    <form onSubmit={handleSubmit}>
-      <h2>Register</h2>
-      <input
-        type="text"
-        name="name"
-        placeholder="Name"
-        value={formData.name}
-        onChange={handleChange}
-      />
-
-      <br />
-
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleChange}
-      />
-
-      <br />
-
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleChange}
-      />
-
-      <br />
-
-      <button type="submit">Submit</button>
-    </form>
-  );
-}
-
-function Greeting(props) {
-  return (
-    <h1>
-      Hello, {props.name} {props.test}
-    </h1>
-  );
-}
-
-function ToggleMessage() {
-  const [show, setShow] = useState(false);
-
+  //This is the HTML creating section.
   return (
     <div>
-      <h2>Toggle Message</h2>
-      <button onClick={() => setShow(!show)}>
-        {show ? "Hide" : "Show"} Message
+      <h2>Post Manager</h2>
+
+      {/* This is the input section that calls the handle function once you make a change. The value would be the actual input in the Title input box. The onChange is linked to the handleChange function, which checks id there was a change to the value of title. */}
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="title"
+          placeholder="Post Title"
+          value={form.title}
+          onChange={handleChange}
+        />
+        <br />
+        {/* This is very similar to the above input section and reasoning, with the difference being it is for content not title */}
+        <textarea
+          name="content"
+          placeholder="Post Content"
+          value={form.content}
+          onChange={handleChange}
+        />
+        <br />
+
+        {/* This is just the button to submit the form */}
+        <button type="submit">Add Post</button>
+      </form>
+
+      {/* This is a onClick method that will either show or hide the posts */}
+      <button onClick={() => setShowPosts(!showPosts)}>
+        {showPosts ? "Hide Posts" : "Show Posts"}
       </button>
-      {show && <p>This is a secret message revealed by React!</p>}
+
+      {/*  if the showPosts is true, and posts has at least 1 entry, and it creates an unordered list and it will us the map method to loop through the array and create a li that with the index, title, and content.*/}
+      {showPosts && posts.length > 0 && (
+        <ul>
+          {posts.map((post, index) => (
+            <li key={index}>
+              <h4>{post.title}</h4>
+              <p>{post.content}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* this will show the actual post info. */}
+      {showPosts && posts.length === 0 && <p>No posts yet.</p>}
     </div>
   );
-}
-
-function LoginToggle() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const handleClick = () => {
-    setIsLoggedIn(!isLoggedIn);
-  };
-
-  return (
-    <div>
-      <button onClick={handleClick}>{isLoggedIn ? "Logout" : "Login"}</button>
-
-      {isLoggedIn && <p>Welcome back, user!</p>}
-    </div>
-  );
-}
-
-function ListExample() {
-  const items = ["React", "Javascript", "CSS", "HTML"];
-
-  return (
-    <div>
-      <h2>Skills List</h2>
-      <ul>
-        {items.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function UserList() {
-  const users = [
-    {
-      id: 1,
-      name: "William",
-      age: 30,
-    },
-    {
-      id: 2,
-      name: "Sarah",
-      age: 28,
-    },
-    {
-      id: 3,
-      name: "Mike",
-      age: 35,
-    },
-  ];
-
-  return (
-    <div>
-      <h2>User List</h2>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}><strong>{user.name}</strong> is {user.age} years old.</li>
-        ))}
-      </ul>
-    </div>
-  )
 }
 
 function App() {
   return (
     <div className="App">
-      <Greeting name="William" test="Beast" />
-      <Counter />
-      <NameInput />
-      <MultiInputForm />
-      <ToggleMessage />
-      <LoginToggle />
-      <ListExample />
-      <UserList />
+      <PostManager />
     </div>
   );
 }
