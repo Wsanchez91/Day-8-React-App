@@ -1,20 +1,20 @@
 import { useState } from "react";
 
 function PostManager() {
-  //This posts useState creates an empty array, where I would enter the new posts.
+  // State to store all submitted posts.
   const [posts, setPosts] = useState([]);
-  //This form useState creates an object with title and content.
+  // State to track the form input values (title and content).
   const [form, setForm] = useState({ title: "", content: "" });
-  //This will be used to check if the state is true or false to show or hide the post.
+  // State to toggle visibility of the post list.
   const [showPosts, setShowPosts] = useState(true);
 
-  //This targets the element key and value in the input section.
+  // Updates form state when an input field changes.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  //This uses the preventDefault event so the page doesn't refresh. It also checks if both title and content have been changed, and it will add the updated title and post changes into the post array.
+  // Handles form submission: prevents page reload, validates input, adds post, and resets form.
   const handleSubmit = (e) => {
     e.preventDefault();
     if (form.title && form.content) {
@@ -23,12 +23,11 @@ function PostManager() {
     }
   };
 
-  //This is the HTML creating section.
   return (
     <div>
       <h2>Post Manager</h2>
 
-      {/* This is the input section that calls the handle function once you make a change. The value would be the actual input in the Title input box. The onChange is linked to the handleChange function, which checks id there was a change to the value of title. */}
+      {/* Form for submitting a new post. Controlled inputs are tied to state. */}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -38,7 +37,6 @@ function PostManager() {
           onChange={handleChange}
         />
         <br />
-        {/* This is very similar to the above input section and reasoning, with the difference being it is for content not title */}
         <textarea
           name="content"
           placeholder="Post Content"
@@ -47,16 +45,16 @@ function PostManager() {
         />
         <br />
 
-        {/* This is just the button to submit the form */}
+        {/* Button to submit the post form */}
         <button type="submit">Add Post</button>
       </form>
 
-      {/* This is a onClick method that will either show or hide the posts */}
+      {/* Toggle visibility of the posts list */}
       <button onClick={() => setShowPosts(!showPosts)}>
         {showPosts ? "Hide Posts" : "Show Posts"}
       </button>
 
-      {/*  if the showPosts is true, and posts has at least 1 entry, and it creates an unordered list and it will us the map method to loop through the array and create a li that with the index, title, and content.*/}
+      {/* If posts exist and showPosts is true, render the list */}
       {showPosts && posts.length > 0 && (
         <ul>
           {posts.map((post, index) => (
@@ -68,7 +66,7 @@ function PostManager() {
         </ul>
       )}
 
-      {/* this will show the actual post info. */}
+      {/* Display fallback text if there are no posts */}
       {showPosts && posts.length === 0 && <p>No posts yet.</p>}
     </div>
   );
