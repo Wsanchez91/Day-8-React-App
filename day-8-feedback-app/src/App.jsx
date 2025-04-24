@@ -65,7 +65,7 @@ function StreakTracker() {
       };
       localStorage.setItem("streakData", JSON.stringify(dataToSave));
     }
-    const today = new Date().toLocaleDateString()
+    const today = new Date().toLocaleDateString();
     setLastVisit(today);
   }, [streak, hasLoaded]);
 
@@ -75,9 +75,97 @@ function StreakTracker() {
       {lastVisit === new Date().toLocaleDateString() && (
         <p style={{ color: "green" }}>✅ Visited Today</p>
       )}
-      <button onClick={()=>setStreak(streak + 1)}
-        disabled={lastVisit === new Date().toLocaleDateString()}>+1</button>
-        <button onClick={() => setStreak(0)}>Reset</button>
+      <button
+        onClick={() => setStreak(streak + 1)}
+        disabled={lastVisit === new Date().toLocaleDateString()}
+      >
+        +1
+      </button>
+      <button onClick={() => setStreak(0)}>Reset</button>
+    </div>
+  );
+}
+
+function RandomUser() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const fetchUser = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("https://randomuser.me/api");
+      const data = await res.json();
+      setUser(data.results[0]);
+      setError("");
+    } catch (err) {
+      setError("Failed to fetch user");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  return (
+    <div>
+      <h2>Random User</h2>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {user && (
+        <div>
+          <img src={user.picture.large} alt="User" />
+          <p>
+            {user.name.first} {user.name.last}
+          </p>
+          <p>{user.email}</p>
+        </div>
+      )}
+      <button onClick={fetchUser}>Get New User</button>
+    </div>
+  );
+}
+
+function RandomUser2() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const fetchUser = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("https://randomuser.me/api");
+      const data = await res.json();
+      setUser(data.results[0]);
+      setError("");
+    } catch (err) {
+      setError("Failed to fetch user");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  return (
+    <div>
+      <h2>Random User</h2>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {user && (
+        <div>
+          <img src={user.picture.large} alt="User" />
+          <p>
+            {user.name.first} {user.name.last}
+          </p>
+          <p>{user.email}</p>
+        </div>
+      )}
+      <button onClock={fetchUser}>Get New User</button>
     </div>
   );
 }
@@ -87,6 +175,8 @@ function App() {
     <div className="App">
       <PersistentCounter />
       <StreakTracker />
+      <RandomUser />
+      <RandomUser2 />
     </div>
   );
 }
