@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function PostManager() {
   // State to store all submitted posts.
@@ -7,6 +7,28 @@ function PostManager() {
   const [form, setForm] = useState({ title: "", content: "" });
   // State to toggle visibility of the post list.
   const [showPosts, setShowPosts] = useState(true);
+
+  const [hasLoaded, setHasLoaded] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("posts");
+      if (stored) {
+        setPosts(JSON.parse(stored));
+      }
+    } catch (err) {
+      console.error("Failed to load posts:", err);
+    } finally {
+      setHasLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (hasLoaded) {
+      localStorage.setItem("posts", JSON.stringify(posts));
+      console.log("Saving posts to localStorage:", posts);
+    }
+  }, [posts, hasLoaded]);
 
   // Updates form state when an input field changes.
   const handleChange = (e) => {
@@ -21,6 +43,7 @@ function PostManager() {
       setPosts((prev) => [...prev, form]);
       setForm({ title: "", content: "" });
     }
+    console.log("Submitting:", form);
   };
 
   return (
