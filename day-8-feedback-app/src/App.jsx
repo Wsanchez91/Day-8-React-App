@@ -30,10 +30,63 @@ function PersistentCounter() {
   );
 }
 
+function StreakTracker() {
+  const [streak, setStreak] = useState(0);
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const [lastVisit, setLastVisit] = useState("");
+
+  useEffect(() => {
+    const streakData = localStorage.getItem("streakData");
+    //
+    const today = new Date().toLocaleDateString();
+
+    if (streakData) {
+      const parsed = JSON.parse(streakData);
+      const { streak, lastVisit } = parsed;
+
+      if (lastVisit !== today) {
+        setStreak(streak + 1);
+      } else {
+        setStreak(streak);
+      }
+    } else {
+      setStreak(1);
+    }
+    setLastVisit(today);
+    setHasLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (hasLoaded) {
+      const today = new Date().toLocaleDateString();
+      const dataToSave = {
+        streak,
+        lastVisit: today,
+      };
+      localStorage.setItem("streakData", JSON.stringify(dataToSave));
+    }
+    const today = new Date().toLocaleDateString()
+    setLastVisit(today);
+  }, [streak, hasLoaded]);
+
+  return (
+    <div>
+      <h2>Daily Streak: {streak} days</h2>
+      {lastVisit === new Date().toLocaleDateString() && (
+        <p style={{ color: "green" }}>✅ Visited Today</p>
+      )}
+      <button onClick={()=>setStreak(streak + 1)}
+        disabled={lastVisit === new Date().toLocaleDateString()}>+1</button>
+        <button onClick={() => setStreak(0)}>Reset</button>
+    </div>
+  );
+}
+
 function App() {
   return (
     <div className="App">
       <PersistentCounter />
+      <StreakTracker />
     </div>
   );
 }
